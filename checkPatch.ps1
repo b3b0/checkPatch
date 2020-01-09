@@ -16,7 +16,7 @@ foreach ($server in (Get-Content ./WindowsDomainServers.txt))
         $session = New-PSSession -ComputerName $server
         if ($session)
         {
-            Invoke-Command -ComputerName $server -ScriptBlock{$today = Get-Date;$lastInst = (gwmi win32_quickfixengineering | select-object -property InstalledOn -Last 1).InstalledOn;if($lastInst){$dateTime = [Datetime]$lastInst;$ts = New-TimeSpan $lastInst $today; if($ts.days -gt 40){Write-Host "This server needs to be patched.";Write-Host $lastInst};if($ts.days -lt 40){Write-Host "Looking good."}} else {"Value was null."}}
+            Invoke-Command -ComputerName $server -ScriptBlock{$today = Get-Date;$lastInst = (gwmi win32_quickfixengineering | select-object -property InstalledOn -Last 1).InstalledOn;if($lastInst){$dateTime = [Datetime]$lastInst;$ts = New-TimeSpan $lastInst $today; if($ts.days -gt 40){Write-Host "This server needs to be patched.";Write-Host $lastInst};if($ts.days -lt 40){Write-Host "Looking good. Last patch applied $ts days ago."}} else {"Value was null."}}
         }
         else 
         {
