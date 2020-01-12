@@ -15,7 +15,7 @@ Checks Windows Servers for patching in the last 40 days.
 
 **Server appears to be offline**: server is not pingable on the network. All proceeding checks are cancelled.
 
-**...Check WinRM**: Ping has suceeded, by the PSSession portion of the connection could not be executed. 
+**...Check WinRM**: Ping has suceeded, but the PSSession portion of the connection could not be executed. 
 
 *Make sure that:*
 - WINRM is enabled on the remote machine
