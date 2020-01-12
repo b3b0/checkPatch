@@ -5,7 +5,7 @@
 
 Clear-Host
 $ErrorActionPreference = "SilentlyContinue"
-Write-Host ""
+Write-Host """
 -----------------------------------------------------
       _               _      ___      _       _     
   ___| |__   ___  ___| | __ / _ \__ _| |_ ___| |__  
@@ -15,9 +15,9 @@ Write-Host ""
                                                   
         https://github.com/b3b0/checkPatch
         
-                 version 1.0.2
+                 version 1.0.3
 -----------------------------------------------------
-""
+"""
 foreach ($server in (Get-Content ./WindowsDomainServers.txt))
 {
     Write-Host "------------"
