@@ -15,7 +15,7 @@ Write-Host """
                                                   
         https://github.com/b3b0/checkPatch
         
-                 version 1.0.3
+                 version 1.0.4
 -----------------------------------------------------
 """
 foreach ($server in (Get-Content ./WindowsDomainServers.txt))
