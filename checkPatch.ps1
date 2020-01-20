@@ -6,7 +6,7 @@
 Clear-Host
 $ErrorActionPreference = "SilentlyContinue"
 Write-Host """
------------------------------------------------------
+=====================================================
       _               _      ___      _       _     
   ___| |__   ___  ___| | __ / _ \__ _| |_ ___| |__  
  / __| '_ \ / _ \/ __| |/ // /_)/ _` | __/ __| '_ \  
@@ -15,8 +15,8 @@ Write-Host """
                                                   
         https://github.com/b3b0/checkPatch
         
-                 version 1.0.4
------------------------------------------------------
+                 version 1.0.5
+=====================================================
 """
 foreach ($server in (Get-Content ./WindowsDomainServers.txt))
 {
@@ -29,7 +29,7 @@ foreach ($server in (Get-Content ./WindowsDomainServers.txt))
         $session = New-PSSession -ComputerName $server
         if ($session)
         {
-            Invoke-Command -ComputerName $server -ScriptBlock{$today = Get-Date;$lastInst = (gwmi win32_quickfixengineering | select-object -property InstalledOn -Last 1).InstalledOn;if($lastInst){$dateTime = [Datetime]$lastInst;$ts = New-TimeSpan $lastInst $today; if($ts.days -ge 40){Write-Host "This server needs to be patched.";Write-Host $lastInst};if($ts.days -lt 40){Write-Host "Looking good. Last patch applied $ts days ago."}} else {"Value was null."}}
+            Invoke-Command -ComputerName $server -ScriptBlock{$today = Get-Date;$lastInst = (gwmi win32_quickfixengineering | select-object -property InstalledOn -Last 1).InstalledOn;if($lastInst){$dateTime = [Datetime]$lastInst;$ts = New-TimeSpan $lastInst $today; if($ts.days -ge 40){Write-Host "This server needs to be patched.";Write-Host $lastInst};if($ts.days -lt 40){Write-Host "Looking good. Last patch applied $ts days ago."}} else {"Value was null."};net statistics workstation}
         }
         else 
         {
