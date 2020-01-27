@@ -3,10 +3,17 @@
 # b3b0
 # https://github.com/b3b0/checkPatch
 
+If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+{   
+    $arguments = "& '" + $myinvocation.mycommand.definition + "'"
+    Start-Process powershell -Verb runAs -ArgumentList $arguments
+    Break
+}
+
 Clear-Host
 $ErrorActionPreference = "SilentlyContinue"
 Write-Host """
-=====================================================
+-----------------------------------------------------
       _               _      ___      _       _     
   ___| |__   ___  ___| | __ / _ \__ _| |_ ___| |__  
  / __| '_ \ / _ \/ __| |/ // /_)/ _` | __/ __| '_ \  
@@ -16,7 +23,7 @@ Write-Host """
         https://github.com/b3b0/checkPatch
         
                  version 1.0.5
-=====================================================
+-----------------------------------------------------
 """
 foreach ($server in (Get-Content ./WindowsDomainServers.txt))
 {
