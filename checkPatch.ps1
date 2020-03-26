@@ -22,9 +22,12 @@ Write-Host """
                                                   
         https://github.com/b3b0/checkPatch
         
-                 version 1.0.5
+                 version 1.1.0
 -----------------------------------------------------
 """
+$countOfServers = (Get-ADComputer -Filter { OperatingSystem -Like '*Windows Server*'} | Select-Object -ExpandProperty Name | Measure-Object -line ).Lines
+Write-Host "Looks like we have $countOfServers servers to check."
+Get-ADComputer -Filter { OperatingSystem -Like '*Windows Server*'} | Select-Object -ExpandProperty Name | Sort-Object > ./WindowsDomainServers.txt
 foreach ($server in (Get-Content ./WindowsDomainServers.txt))
 {
     Write-Host "------------"
@@ -36,7 +39,21 @@ foreach ($server in (Get-Content ./WindowsDomainServers.txt))
         $session = New-PSSession -ComputerName $server
         if ($session)
         {
-            Invoke-Command -ComputerName $server -ScriptBlock{$today = Get-Date;$lastInst = (gwmi win32_quickfixengineering | select-object -property InstalledOn -Last 1).InstalledOn;if($lastInst){$dateTime = [Datetime]$lastInst;$ts = New-TimeSpan $lastInst $today; if($ts.days -ge 40){Write-Host "This server needs to be patched.";Write-Host $lastInst};if($ts.days -lt 40){Write-Host "Looking good. Last patch applied $ts days ago."}} else {"Value was null."};net statistics workstation}
+            Invoke-Command -ComputerName $server -ScriptBlock{$today = Get-Date;$lastInst = (gwmi win32_quickfixengineering | select-object -property InstalledOn -Last 1).InstalledOn;if($lastInst){$dateTime = [Datetime]$lastInst;$ts = New-TimeSpan $lastInst $today; if($ts.days -ge 40){Write-Host "This server needs to be patched.";Write-Host $lastInst;echo "" >> "C:\PATCHALERT-$Env:computername.txt"};if($ts.days -lt 40){Write-Host "Looking good. Last patch applied $ts days ago."}} else {"Value was null.";echo "" >> "C:\NULLALERT-$Env:computername.txt"}; net statistics workstation}
+            Write-Host "Checking for patching..."
+            if (Test-Path "\\$server\c$\PATCHALERT-$server.txt")
+            {
+                Write-Host "Copying over the alert..."
+                Copy-Item "\\$server\c$\PATCHALERT-$server.txt" ./
+                Remove-Item "\\$server\c$\PATCHALERT-$server.txt"
+            }
+            Write-Host "Checking for NULL..."
+            if (Test-Path "\\$server\c$\NULLALERT-$server.txt")
+            {
+                Write-Host "Copying over the alert..."
+                Copy-Item "\\$server\c$\NULLALERT-$server.txt" ./
+                Remove-Item "\\$server\c$\NULLALERT-$server.txt"
+            }
         }
         else 
         {
@@ -49,3 +66,14 @@ foreach ($server in (Get-Content ./WindowsDomainServers.txt))
     }
     Write-Host ""
 }
+Write-Host "NEEDS TO BE PATCHED:"
+Write-Host "---------------"
+Get-ChildItem | Select-Object -ExpandProperty Name | Select-String "PATCHALERT"
+
+Write-Host "---------------"
+Write-Host "WAS NULL:"
+Write-Host "---------------"
+Get-ChildItem | Select-Object -ExpandProperty Name | Select-String "NULL"
+
+Remove-Item ./PATCHALERT*
+Remove-Item ./NULLALERT*
