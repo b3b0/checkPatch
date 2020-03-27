@@ -25,3 +25,9 @@ Checks Windows Servers for patching in the last 40 days.
 - and that you have appropriate permissions to engage with the remote machine over WinRM.
 
 **...needs to be patched**: Obvious. Also tells you when last patch was executed. 
+
+## Future
+
+- Lists as input
+- single hosts as input
+- switch to prompt for credentials
