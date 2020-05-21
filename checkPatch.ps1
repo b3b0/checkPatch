@@ -3,6 +3,11 @@
 # b3b0
 # https://github.com/b3b0/checkPatch
 
+# The Unlicense
+# January 2020
+# b3b0
+# https://github.com/b3b0/checkPatch
+
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {   
     $arguments = "& '" + $myinvocation.mycommand.definition + "'"
@@ -22,7 +27,7 @@ Write-Host """
                                                   
         https://github.com/b3b0/checkPatch
         
-                 version 1.1.0
+                 version 1.1.1
 -----------------------------------------------------
 """
 $countOfServers = (Get-ADComputer -Filter { OperatingSystem -Like '*Windows Server*'} | Select-Object -ExpandProperty Name | Measure-Object -line ).Lines
@@ -66,6 +71,7 @@ foreach ($server in (Get-Content ./WindowsDomainServers.txt))
     }
     Write-Host ""
 }
+Write-Host "---------------"
 Write-Host "NEEDS TO BE PATCHED:"
 Write-Host "---------------"
 Get-ChildItem | Select-Object -ExpandProperty Name | Select-String "PATCHALERT"
